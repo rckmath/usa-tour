@@ -6,7 +6,7 @@
             "type": "shell",
             "command": "g++",
             "args": [
-                "src/main.cpp",
+                "${relativeFile}",
                 "-o",
                 "${workspaceFolderBasename}"
             ],
