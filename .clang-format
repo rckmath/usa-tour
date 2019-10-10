@@ -8,7 +8,7 @@ BreakBeforeBraces: Custom
 BraceWrapping:
   AfterEnum: true
   AfterStruct: false
-  AfterClass: true
+  AfterClass: false
   SplitEmptyFunction: true
   AfterControlStatement: false
   AfterNamespace: false
