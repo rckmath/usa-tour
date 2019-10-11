@@ -41,15 +41,12 @@ public:
     /**
      *  Elimina o elemento da primeira posicao da fila e retorna ele
      */
-    queue_element del() {
+    queue_element eliminate() {
         temp = new node();
         temp = front;
         queue_element data = front->data;  // Recebe a info que estarei retirando da fila
 
-        if (front == NULL) {
-            std::cout << "Fila vazia!";
-            return NULL;
-        } else {
+        if (front != NULL) {
             front = front->next;
             delete temp;  // Limpa na memoria
             return data;

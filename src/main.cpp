@@ -8,11 +8,12 @@ typedef struct {
     int cost;       // Custo do percurso
 } route;
 
-typedef int queue_element;
+typedef route queue_element;
 #include "..\lib\dyn_queue.h"
 
 /**
  * Mostra a menor rota na tela (prototipo)
+ * @param sr Vetor contendo o ID dos locais que formam o menor caminho
  */
 void print_shortest_route(int *sr) {
     int i = 0;
@@ -22,19 +23,14 @@ void print_shortest_route(int *sr) {
 }
 
 int main() {
-    int i = 0, j = 0, k = 0;                       // Contadores
-    int lowest_cost = 99999;                       // Menor custo
-    int shortest_route[42] = {0};                  // Menor rota
-    memset(shortest_route, -1, 42 * sizeof(int));  // Inicializa os elementos com -1 (id invalido)
-
     /**
-    * ------- INDICES POR REGIAO -------
+    * /INDICES POR REGIAO /
     * 
     * NOROESTE     NORDESTE
-    *  [0-8]       [30-41]
+    * [00-08]      [30-41]
     * 
     * SUDOESTE     SUDESTE
-    *  [9-17]      [18-29]
+    * [09-17]      [18-29]
     */
     char locations[42][20] = {
         /*00*/ {"Boise"},
@@ -124,9 +120,49 @@ int main() {
                             /*40*/ {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 560, 0, 0, 0, 0, 0, 0, 710, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 200},
                             /*41*/ {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 700, 530, 590, 0, 0, 0, 240, 0, 200, 0}};
 
-    Queue found_routes;
+    int flag = 0;
+    int i = 0, j = 0, k = 0, vertex_counter = 0;   // Contadores
+    unsigned int lowest_cost = 99999;              // Menor custo
+    int shortest_route[42] = {-1};                 // Menor rota
+    memset(shortest_route, -1, 42 * sizeof(int));  // Inicializa os elementos com -1 (id invalido)
 
-    for (i = 0; i < 42; i++) {
-        cout << locations[i] << endl;
+    Queue found_routes;  // Fila de rotas possiveis
+    queue_element x;     // Elemento da fila
+    int initial_vertex;  // Ponto de partida
+    int final_vertex;    // Ponto de chegada
+
+    /* ------------ */
+
+    initial_vertex = 2;
+    final_vertex = 8;
+    x.cost = 0;
+    x.route[0] = initial_vertex;
+
+    insertQ(q, x);
+    found_routes.insert(x);
+    while (!found_routes.is_empty()) {
+        x = found_routes.eliminate();
+
+        // Caminha com o contador ate a ultima posicao guardada
+        for (i = 0; x.route[i] != -1; i++) {
+        }
+        i--;  // Se i = -1, i-1 = ultima posicao guardada
+
+        /**
+        * Verifica se rota eh igual ao ponto de destino e flag esta sinalizada
+        */
+        if (x.route[i] == final_vertex && flag != 0) {
+            // Se o custo atual eh menor que o menor custo guardado, guarda o custo atual e o percurso
+            if (x.cost < lowest_cost) {
+                lowest_cost = x.cost;
+                for (int counter = 0; x.route[counter] != 0; counter++)
+                    shortest_route[counter] = x.route[counter];
+            }
+        } else {
+            for (j = 0; adj_matrix[])
+                flag = 1;
+        }
     }
+
+    return 0;
 }
