@@ -112,18 +112,20 @@ int get_edge_weight(int adj_matrix[][42], int x, int y) {
  * @param destiny ID do local de destino
  * @param t Guarda o tempo decorrido do processo de busca
  */
-void print_shortest(element s, int destiny, milliseconds t) {
+void print_shortest(element s, int am[][42], int destiny, milliseconds t) {
     int i = 0;
+    bool inverter = false;
+
     cout << "---- MENOR PERCURSO ----" << endl
          << "De: " << get_place_name(s.route[0]) << endl
          << "Para: " << get_place_name(destiny) << endl
-         << endl
-         << "Rota completa: ";
+         << "\nRota completa:\n\n";
     while (s.route[i++] != -1) {
-        cout << get_place_name(s.route[i - 1]);
         if (s.route[i] != -1) {
-            cout << " - ";
-        }
+            cout << get_place_name(s.route[i - 1]);
+            cout << " -> " << get_place_name(s.route[i]) << " (" << get_edge_weight(am, s.route[i - 1], s.route[i]) << " km)" << endl;
+        } else
+            break;
     }
     cout << "\nDistancia total: " << s.cost << " km";
     cout << endl
@@ -296,10 +298,10 @@ int main() {
                             found_routes.insert(x);
 
                         /* Para fins de debug (sera removido posteriormente) */
-                        int m = -1;
+                        /*int m = -1;
                         while (x.route[m++] != -1)
                             cout << x.route[m] << " ";
-                        cout << endl;
+                        cout << endl;*/
 
                         // Restaura nosso elemento atual
                         copy_element(temp, &x);
@@ -313,6 +315,6 @@ int main() {
     t_stop = Clock::now();
     milliseconds ms = chrono::duration_cast<milliseconds>(t_stop - t_start);
 
-    print_shortest(shortest, final_vertex, ms);
+    print_shortest(shortest, adj_matrix, final_vertex, ms);
     return 0;
 }
