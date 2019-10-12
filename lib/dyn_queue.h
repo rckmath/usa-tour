@@ -7,7 +7,7 @@
 
 class Queue {
     struct node {
-        queue_element data;
+        element data;
         struct node *next;
     } * front, *rear, *temp;
     typedef struct node node;
@@ -24,7 +24,7 @@ public:
     /**
      * Insere no final da fila
      */
-    void insert(queue_element x) {
+    void insert(element x) {
         temp = new node();
         temp->data = x;
 
@@ -41,10 +41,10 @@ public:
     /**
      *  Elimina o elemento da primeira posicao da fila e retorna ele
      */
-    queue_element eliminate() {
+    element eliminate() {
         temp = new node();
         temp = front;
-        queue_element data = front->data;  // Recebe a info que estarei retirando da fila
+        element data = front->data;  // Recebe a info que estarei retirando da fila
 
         if (front != NULL) {
             front = front->next;

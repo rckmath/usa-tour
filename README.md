@@ -1,6 +1,6 @@
 # The project
 
-A graph algorithm written in C++ to find the shortest way to run out through all points from an initial one. Developed to the university course project.
+A graph algorithm written in C++ to find the shortest way to run out through all points from an initial one. Developed to a university course project.
 
 The program itself is in portuguese language.,
 
