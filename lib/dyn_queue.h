@@ -8,7 +8,7 @@
 class Queue {
     struct node {
         element data;
-        struct node *next;
+        struct node* next;
     } * front, *rear, *temp;
     typedef struct node node;
 
@@ -19,6 +19,16 @@ public:
     Queue() {
         front = NULL;
         rear = NULL;
+    }
+
+    /**
+     * Verifica se fila esta vazia, retorna 1 caso estiver
+     */
+    int is_empty() {
+        if (front == NULL) {
+            return 1;
+        }
+        return 0;
     }
 
     /**
@@ -42,25 +52,14 @@ public:
      *  Elimina o elemento da primeira posicao da fila e retorna ele
      */
     element eliminate() {
-        temp = new node();
         temp = front;
         element data = front->data;  // Recebe a info que estarei retirando da fila
 
         if (front != NULL) {
             front = front->next;
-            delete temp;  // Limpa na memoria
+            delete temp;
             return data;
         }
-    }
-
-    /**
-     * Verifica se fila esta vazia, retorna 1 caso estiver
-     */
-    int is_empty() {
-        if (front == NULL) {
-            return 1;
-        }
-        return 0;
     }
 };
 

@@ -1,20 +1,21 @@
 /**
  * Nomes:   Erick M. L. Pacheco             RAs:    18711630
- *          Leonardo Sanavio                        18054395                 
- * 
- * Num. max. de cidades atendidas (time-out de 60 segundos): 
+ *          Leonardo Sanavio                        18054395
+ *
+ * Num. max. de cidades atendidas (time-out de 60 segundos):
  * Opcionais funcionando:
  *          Opcional 5
  *
- * Obs: 
+ * Obs:
  *
  * Valor do projeto:  1 ponto(s)
  */
 
 #include <chrono>
 #include <cstring>
-#include <ctime>
 #include <iostream>
+
+#define TOTAL_LOCATIONS 41
 
 using namespace std;
 
@@ -31,10 +32,10 @@ typedef route element;
 
 /**
  * /INDICES POR REGIAO /
- * 
+ *
  * NOROESTE     NORDESTE
  * [00-08]      [30-41]
- * 
+ *
  * SUDOESTE     SUDESTE
  * [09-17]      [18-29]
  */
@@ -82,9 +83,12 @@ static char locations[42][20] = {
     /*40*/ {"Richmond"},
     /*41*/ {"Washington"}};
 
+Clock::time_point t_start;  // Guardara o inicio da contagem de tempo
+Clock::time_point t_stop;   // Guardara o final da contagem de tempo
+
 /**
  * Busca e retorna o nome do local
- * 
+ *
  * @param locations Lista de locais para consulta
  * @param index ID/indice do local
  * @return Nome do local
@@ -95,7 +99,7 @@ char *get_place_name(int index) {
 
 /**
  * Busca e retorna o peso da aresta
- * 
+ *
  * @param x Linha da matriz (cidade A)
  * @param y Coluna da matriz (cidade B)
  * @return Peso da aresta na posicao xy
@@ -106,13 +110,13 @@ int get_edge_weight(int adj_matrix[][42], int x, int y) {
 
 /**
  * Mostra a menor rota na tela (prototipo)
- * 
+ *
  * @param s Elemento contendo vetor com IDs das cidades do menor caminho e o menor custo
  * @param locations Lista de locais para consulta
  * @param destiny ID do local de destino
  * @param t Guarda o tempo decorrido do processo de busca
  */
-void print_shortest(element s, int am[][42], int destiny, milliseconds t) {
+void print_shortest(element s, int am[][42], int destiny) {
     int i = 0;
     bool inverter = false;
 
@@ -128,26 +132,17 @@ void print_shortest(element s, int am[][42], int destiny, milliseconds t) {
             break;
     }
     cout << "\nDistancia total: " << s.cost << " km";
+
+    t_stop = Clock::now();
+    milliseconds ms = chrono::duration_cast<milliseconds>(t_stop - t_start);
     cout << endl
-         << "Tempo de processamento: " << t.count() << " ms" << endl
+         << "Tempo de processamento: " << ms.count() << " ms" << endl
          << "------------------------";
 }
 
 /**
- * Copia um elemento para o outro
- * 
- * @param a Elemento que sera copiado
- * @param b Elemento que recebera a copia
- */
-void copy_element(element a, element *b) {
-    b->cost = a.cost;
-    for (int counter = 0; counter < 42; counter++)
-        b->route[counter] = a.route[counter];
-}
-
-/**
  * Apresenta o menu e le as opcoes de usuario
- * 
+ *
  * @param iv Vertice inicial
  * @param fv Vertice final
  */
@@ -161,6 +156,7 @@ void read(int *iv, int *fv) {
          << endl
          << "> ";
     do {
+        read_again = false;
         cin >> op;
         switch (op) {
             case 1:
@@ -178,7 +174,7 @@ void read(int *iv, int *fv) {
                 break;
             default:
                 read_again = true;
-                cout << "Favor inserir uma opcao valida!" << endl
+                cout << "Favor inserir opcao valida!" << endl
                      << "> ";
         }
     } while (read_again);
@@ -229,20 +225,18 @@ int main() {
                             /*40*/ {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 560, 0, 0, 0, 0, 0, 0, 710, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 200},
                             /*41*/ {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 700, 530, 590, 0, 0, 0, 240, 0, 200, 0}};
 
-    Queue found_routes;         // Fila de rotas possiveis
-    element x;                  // Elemento da fila
-    element shortest;           // Nosso menor caminho
-    int initial_vertex;         // Vertice de partida
-    int final_vertex;           // Vertice de chegada
-    bool add_to_queue = true;   // Flag p/ adicionar vertice + custo na fila
-    Clock::time_point t_start;  // Guardara o inicio da contagem de tempo
-    Clock::time_point t_stop;   // Guardara o inicio da contagem de tempo
+    Queue found_routes;        // Fila de rotas possiveis
+    element x;                 // Elemento da fila
+    element shortest;          // Nosso menor caminho
+    int initial_vertex;        // Vertice de partida
+    int final_vertex;          // Vertice de chegada
+    bool add_to_queue = true;  // Flag p/ adicionar vertice + custo na fila
 
     /* -------------------- */
 
-    // Inicializa todos os elementos de ambas os arrays de rota presentes nas structs com -1
-    memset(x.route, -1, 42 * sizeof(int));
-    memset(shortest.route, -1, 42 * sizeof(int));
+    // Inicializa todos os elementos de ambos os arrays de rota presentes nas structs com -1
+    memset(x.route, -1, TOTAL_LOCATIONS * sizeof(int));
+    memset(shortest.route, -1, TOTAL_LOCATIONS * sizeof(int));
     shortest.cost = 999999;
 
     read(&initial_vertex, &final_vertex);
@@ -258,7 +252,6 @@ int main() {
 
     t_start = Clock::now();
     while (!found_routes.is_empty()) {
-        vertex_counter++;
         x = found_routes.eliminate();
 
         // Caminha com o contador ate a ultima posicao guardada
@@ -277,44 +270,40 @@ int main() {
                     shortest.route[counter] = x.route[counter];
             }
         } else {
-            for (j = 0; j < 42; j++) {
+            for (j = 0; j < TOTAL_LOCATIONS; j++) {
                 if (adj_matrix[x.route[i]][j] != 0) {
                     // Se o indice atual da matriz existir em x.route, setar flag p/ n adicionar na fila
                     for (k = 0; x.route[k] != -1; k++) {
-                        if (x.route[k] == j)
+                        if (x.route[k] == j) {
                             add_to_queue = false;
+                            break;
+                        }
                     }
+
                     // Adiciona na fila caso a flag for verdadeira
                     if (add_to_queue) {
-                        element temp;
-
-                        // Copia nosso elemento atual
-                        copy_element(x, &temp);
                         x.cost += adj_matrix[x.route[i]][j];  // Soma o custo
                         x.route[i + 1] = j;                   // Concatena o vertice
 
-                        // Se o custo total atal for menor que o menor custo, adiciona na fila
+                        // Se o custo total for menor que o menor custo, adiciona na fila, caso contrario, poda (caminho ruim)
                         if (x.cost < shortest.cost)
                             found_routes.insert(x);
 
                         /* Para fins de debug (sera removido posteriormente) */
-                        /*int m = -1;
+                        /*int m = 0;
                         while (x.route[m++] != -1)
-                            cout << x.route[m] << " ";
+                            cout << x.route[m - 1] << " ";
                         cout << endl;*/
 
-                        // Restaura nosso elemento atual
-                        copy_element(temp, &x);
+                        // Restaura nosso elemento
+                        x.cost -= adj_matrix[x.route[i]][j];
+                        x.route[i + 1] = -1;
                     }
-
                     add_to_queue = true;
                 }
             }
         }
     }
-    t_stop = Clock::now();
-    milliseconds ms = chrono::duration_cast<milliseconds>(t_stop - t_start);
-
-    print_shortest(shortest, adj_matrix, final_vertex, ms);
+    print_shortest(shortest, adj_matrix, final_vertex);
     return 0;
 }
