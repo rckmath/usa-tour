@@ -5,14 +5,14 @@
  * @param q Fila que guardara as N possibilidades de caminhos
  * @param x Struct que recebera a possibilidade da busca atual
  * @param min Struct que guarda o menor caminho
- * @param i Posicao do ultimo elemento do vetor de rotas da struct x
  * @param j Posicao do adjacente que conecta com o ultimo elemento da sequencia de caminhos possiveis
  */
-void add_to_queue(bool *add, Stack &s, Queue &q, element *x, element *min, int i, int j, int op) {
+void add_to_queue(bool *add, Stack &s, Queue &q, element *x, element *min, int j, int op) {
     // Adiciona na fila caso a flag for verdadeira
     if (*add) {
-        x->cost += adj_matrix[x->route[i]][j];  // Soma o custo
-        x->route[i + 1] = j;                    // Concatena o vertice
+        x->cost += adj_matrix[x->route[x->index]][j];  // Soma o custo
+        x->index++;
+        x->route[x->index] = j;  // Concatena o vertice
 
         // Se o custo total for menor que o menor custo, adiciona na fila, caso contrario, poda (caminho ruim)
         if (x->cost < min->cost) {
@@ -23,8 +23,8 @@ void add_to_queue(bool *add, Stack &s, Queue &q, element *x, element *min, int i
         }
 
         // Restaura nosso elemento
-        x->cost -= adj_matrix[x->route[i]][j];
-        x->route[i + 1] = -1;
+        x->cost -= adj_matrix[x->route[x->index - 1]][j];
+        x->index--;
     }
     *add = true;
 }
@@ -37,7 +37,7 @@ void add_to_queue(bool *add, Stack &s, Queue &q, element *x, element *min, int i
  */
 bool skip_vertex(element *x, int j) {
     // Se o indice atual da matriz existir em x.route, setar flag p/ n adicionar na fila
-    for (int k = 0; x->route[k] != -1; k++) {
+    for (int k = 0; k <= x->index; k++) {
         if (x->route[k] == j) {
             return false;
         }
@@ -52,26 +52,25 @@ bool skip_vertex(element *x, int j) {
  * @param q Fila que guardara as N possibilidades de caminhos
  * @param x Struct que recebera a possibilidade da busca atual
  * @param min Struct que guarda o menor caminho
- * @param i Posicao do ultimo elemento do vetor de rotas da struct x
  * @param op Opcao de busca
  * @param sub Fator de subtracao
  */
-void process_search(Stack &s, Queue &q, element *x, element *min, int i, int op, int sub) {
+void process_search(Stack &s, Queue &q, element *x, element *min, int op, int sub) {
     int j = 0;        // Para percorrer as colunas da nossa matriz
     bool add = true;  // Flag p/ adicionar vertice + custo na fila
 
     for (j = 0; j < size; j++) {
-        if (adj_matrix[x->route[i]][j] != 0) {
+        if (adj_matrix[x->route[x->index]][j] != 0) {
             if (op == 3) {
                 add = skip_vertex(x, j);
             } else {
-                if (j == x->route[0] && i >= (size - sub)) {
+                if (j == x->route[0] && x->index > (size - sub)) {
                     add = true;
                 } else {
                     add = skip_vertex(x, j);
                 }
             }
-            add_to_queue(&add, s, q, x, min, i, j, op);
+            add_to_queue(&add, s, q, x, min, j, op);
         }
     }
 }
@@ -88,25 +87,20 @@ void process_search(Stack &s, Queue &q, element *x, element *min, int i, int op,
  * @param sub Fator de subtracao
  */
 void verify(element *x, element *min, Queue &q, Stack &s, int final_vertex, int op, int sub) {
-    int i;  // Para apontar a ultima aresta inserida na rota
-
-    // Caminha com o contador ate a ultima posicao guardada
-    for (i = 0; x->route[i] != -1; i++) {
-    }
-    i--;  // Se x.route[i] = -1, x.route[i-1] = ultima posicao valida guardada
-
     /**
     * Verifica se rota eh igual ao ponto de destino
     */
-    if (x->route[i] == final_vertex && i >= (size - sub)) {
+    if (x->route[x->index] == final_vertex && x->index > (size - sub)) {
         // Se o custo atual eh menor que o menor custo guardado, guarda o custo atual e o percurso
         if (x->cost < min->cost) {
             min->cost = x->cost;
+            min->index = x->index;
             for (int j = 0; x->route[j] != -1; j++)
                 min->route[j] = x->route[j];
         }
-    } else
-        process_search(s, q, x, min, i, op, sub);
+    } else {
+        process_search(s, q, x, min, op, sub);
+    }
 }
 
 /**
@@ -134,10 +128,9 @@ void search_min(element *min, int initial_vertex, int final_vertex, int op) {
     }
 
     // Inicializa todos os elementos de ambos os arrays de rota presentes nas structs com -1
-    memset(x.route, -1, size * sizeof(int));
-    memset(min->route, -1, size * sizeof(int));
-    min->cost = 999999;
-
+    memset(x.route, -1, (size + 1) * sizeof(int));
+    memset(min->route, -1, (size + 1) * sizeof(int));
+    min->cost = INT_MAX;
     x.cost = 0;
     x.route[0] = initial_vertex;
 
