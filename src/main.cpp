@@ -26,7 +26,6 @@ typedef chrono::milliseconds milliseconds;
 
 #include "base.cpp"
 #include "search.cpp"
-//#include "search2.cpp"
 
 Clock::time_point t_start;  // Guardara o inicio da contagem de tempo
 Clock::time_point t_stop;   // Guardara o final da contagem de tempo
@@ -123,7 +122,7 @@ void print_shortest(element s, int destiny) {
     system("clear || cls");
     int i = 0;
 
-    cout << "---- MENOR PERCURSO ----" << endl
+    cout << "--------- MENOR PERCURSO ---------" << endl
          << "\nDe: " << get_place_name(s.route[0]) << endl
          << "Para: " << get_place_name(destiny) << endl
          << "\nRota completa:\n\n";
@@ -138,7 +137,7 @@ void print_shortest(element s, int destiny) {
     cout << endl
          << "\nTempo de processamento: " << ms.count() / 1000.0 << " seg" << endl
          << "Num. de cidades percorridas: " << i - 1 << endl
-         << "\n------------------------";
+         << "\n----------------------------------";
 }
 
 int read_vertex(int *iv, int *fv, int op) {

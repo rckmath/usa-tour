@@ -104,7 +104,7 @@ void verify(element *x, element *min, Queue &q, Stack &s, int final_vertex, int 
 }
 
 /**
- * Busca o menor custo
+ * Inicia a busca pelo menor custo
  * 
  * @param min Struct que guarda o menor caminho
  * @param initial_vertex Vertice inicial/inicio
