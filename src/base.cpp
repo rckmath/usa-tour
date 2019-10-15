@@ -1,11 +1,16 @@
+#define TRUE 1
+#define FALSE 0
+
 typedef struct {
-    int route[43];      // 43 p/ caso max.
-    unsigned int cost;  // Custo do percurso
+    int route[43];           // 43 p/ caso max.
+    unsigned int index = 0;  // Posicao do ultimo armazenado
+    unsigned int cost;       // Custo do percurso
 } route;
 
 typedef route element;
 typedef route stack_element;
 
+#include <limits.h>
 #include "..\lib\dyn_queue.h"
 #include "..\lib\stackld.h"
 

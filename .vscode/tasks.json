@@ -8,7 +8,7 @@
             "args": [
                 "${relativeFile}",
                 "-o",
-                "${fileDirname}/${workspaceFolderBasename}"
+                "${fileDirname}\\${workspaceFolderBasename}"
             ],
             "problemMatcher": []
         },

@@ -56,7 +56,7 @@ public:
         element data = front->data;  // Recebe a info que estarei retirando da fila
 
         if (front != NULL) {
-            front = front->next;
+            front = (front)->next;
             delete temp;
             return data;
         }
