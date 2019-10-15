@@ -8,14 +8,14 @@
             "args": [
                 "${relativeFile}",
                 "-o",
-                "${workspaceFolderBasename}"
+                "${fileDirname}/${workspaceFolderBasename}"
             ],
             "problemMatcher": []
         },
         {
             "label": "run",
             "type": "shell",
-            "command": "./${workspaceFolderBasename}",
+            "command": "./exec.bat",
             "dependsOn": [
                 "build"
             ],
