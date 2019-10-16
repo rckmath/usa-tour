@@ -1,6 +1,3 @@
-#define TRUE 1
-#define FALSE 0
-
 typedef struct {
     int route[43];           // 43 p/ caso max.
     unsigned int index = 0;  // Posicao do ultimo armazenado

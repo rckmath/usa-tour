@@ -86,7 +86,7 @@ void process_search(Stack &s, Queue &q, element *x, element *min, int op, int su
  * @param op Opcao de busca
  * @param sub Fator de subtracao
  */
-void verify(element *x, element *min, Queue &q, Stack &s, int final_vertex, int op, int sub) {
+bool verify(element *x, element *min, Queue &q, Stack &s, int final_vertex, int op, int sub) {
     /**
     * Verifica se rota eh igual ao ponto de destino
     */
@@ -97,10 +97,12 @@ void verify(element *x, element *min, Queue &q, Stack &s, int final_vertex, int 
             min->index = x->index;
             for (int j = 0; x->route[j] != -1; j++)
                 min->route[j] = x->route[j];
+            return true;
         }
     } else {
         process_search(s, q, x, min, op, sub);
     }
+    return false;
 }
 
 /**
@@ -141,13 +143,13 @@ void search_min(element *min, int initial_vertex, int final_vertex, int op) {
         push(found_routes_s, x);
         while (!isEmpty(found_routes_s)) {
             x = pop(found_routes_s);
-            verify(&x, min, found_routes_q, found_routes_s, final_vertex, op, sub);
+            if (verify(&x, min, found_routes_q, found_routes_s, final_vertex, op, sub)) break;
         }
     } else {
         found_routes_q.insert(x);
         while (!found_routes_q.is_empty()) {
             x = found_routes_q.eliminate();
-            verify(&x, min, found_routes_q, found_routes_s, final_vertex, op, sub);
+            if (op == 1 && verify(&x, min, found_routes_q, found_routes_s, final_vertex, op, sub)) break;
         }
     }
 }
