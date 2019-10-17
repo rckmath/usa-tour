@@ -88,7 +88,7 @@ void process_search(Stack &s, Queue &q, element *x, element *min, int op, int su
  */
 bool verify(element *x, element *min, Queue &q, Stack &s, int final_vertex, int op, int sub) {
     /**
-    * Verifica se rota eh igual ao ponto de destino
+    * Verifica se o ultimo vertice de rota eh igual ao ponto de destino
     */
     if (x->route[x->index] == final_vertex && x->index > (size - sub)) {
         // Se o custo atual eh menor que o menor custo guardado, guarda o custo atual e o percurso
@@ -99,9 +99,9 @@ bool verify(element *x, element *min, Queue &q, Stack &s, int final_vertex, int 
                 min->route[j] = x->route[j];
             return true;
         }
-    } else {
+    } else
         process_search(s, q, x, min, op, sub);
-    }
+
     return false;
 }
 
@@ -135,6 +135,7 @@ void search_min(element *min, int initial_vertex, int final_vertex, int op) {
     min->cost = INT_MAX;
     x.cost = 0;
     x.route[0] = initial_vertex;
+    x.index = 0;
 
     cout << endl
          << "Por favor aguarde, buscando rotas..." << endl;
@@ -149,7 +150,8 @@ void search_min(element *min, int initial_vertex, int final_vertex, int op) {
         found_routes_q.insert(x);
         while (!found_routes_q.is_empty()) {
             x = found_routes_q.eliminate();
-            if (op == 1 && verify(&x, min, found_routes_q, found_routes_s, final_vertex, op, sub)) break;
+            if (verify(&x, min, found_routes_q, found_routes_s, final_vertex, op, sub))
+                if (op == 1) break;
         }
     }
 }
