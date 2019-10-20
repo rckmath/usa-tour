@@ -2,7 +2,7 @@
  * Nomes:   Erick M. L. Pacheco             RAs:    18711630
  *          Leonardo Sanavio                        18054395
  *
- * Num. max. de cidades atendidas (time-out de 60 segundos):
+ * Num. max. de cidades atendidas (time-out de 60 segundos): 39 (busca rapida), 23 (busca lenta)
  * Opcionais funcionando:
  *          Opcional 5
  *
@@ -16,9 +16,6 @@
 #include <iomanip>
 #include <iostream>
 
-#pragma comment(linker, "/STACK: 2000000")
-#pragma comment(linker, "/HEAP: 2000000")
-
 using namespace std;
 
 typedef chrono::high_resolution_clock Clock;
@@ -26,7 +23,6 @@ typedef chrono::milliseconds milliseconds;
 
 #include "base.cpp"
 #include "search.cpp"
-//#include "search2.cpp"
 
 Clock::time_point t_start;  // Guardara o inicio da contagem de tempo
 Clock::time_point t_stop;   // Guardara o final da contagem de tempo
@@ -47,19 +43,23 @@ int main() {
     int initial_vertex;  // Vertice de partida
     int final_vertex;    // Vertice de chegada
 
-    int op = read(&initial_vertex, &final_vertex);
+    do {
+        int op = read(&initial_vertex, &final_vertex);
 
-    build_matrix("../lib/matrix.txt");
+        build_matrix("../lib/matrix.txt");
 
-    t_start = Clock::now();
+        t_start = Clock::now();
 
-    search_min(&shortest, initial_vertex, final_vertex, op);
-    cout << '\7';
-    print_shortest(shortest, final_vertex);
+        search_min(&shortest, initial_vertex, final_vertex, op);
+        cout << '\7';
+        print_shortest(shortest, final_vertex);
 
-    cout << endl
-         << endl;
-    system("pause");
+        cout << endl
+             << endl;
+        system("pause");
+        system("clear || cls");
+    } while (true);
+
     return 0;
 }
 
@@ -73,10 +73,10 @@ void build_matrix(char *adj) {
 
     fscanf(fp, "%d\n", &size);
 
-    adj_matrix = (int **)calloc(size, sizeof(int));
+    // adj_matrix = (int **)calloc(size, sizeof(int));
 
     for (int i = 0; i < size; i++) {
-        adj_matrix[i] = (int *)calloc(size, sizeof(int));
+        // adj_matrix[i] = (int *)calloc(size, sizeof(int));
         for (int j = 0; j < size; j++)
             fscanf(fp, "%d ", &adj_matrix[i][j]);
     }
@@ -108,9 +108,8 @@ int get_edge_weight(int i, int j) {
  * Printa os locais disponiveis
  */
 void display_places() {
-    for (int i = 1; i <= 14; i++) {
+    for (int i = 1; i <= 14; i++)
         printf("%d. %-25s%d. %-25s%d. %-25s\n", i, get_place_name(i - 1), i + 14, get_place_name(i + 13), i + 28, get_place_name(i + 27));
-    }
 }
 
 /**
@@ -123,7 +122,7 @@ void print_shortest(element s, int destiny) {
     system("clear || cls");
     int i = 0;
 
-    cout << "---- MENOR PERCURSO ----" << endl
+    cout << "--------- MENOR PERCURSO ---------" << endl
          << "\nDe: " << get_place_name(s.route[0]) << endl
          << "Para: " << get_place_name(destiny) << endl
          << "\nRota completa:\n\n";
@@ -138,11 +137,19 @@ void print_shortest(element s, int destiny) {
     cout << endl
          << "\nTempo de processamento: " << ms.count() / 1000.0 << " seg" << endl
          << "Num. de cidades percorridas: " << i - 1 << endl
-         << "\n------------------------";
+         << "\n----------------------------------";
 }
 
-int read_vertex(int *iv, int *fv, int op) {
-    bool read_again;
+/**
+ * Le os vertices iniciais e finals
+ * 
+ * @param iv Vertice inicial
+ * @param fv Vertice final
+ * @param op Opcao do usuario
+ */
+void read_vertex(int *iv, int *fv, int op) {
+    bool read_again, i = 0;
+
     cout << "\nInsira o ponto de partida" << endl;
     do {
         read_again = false;
@@ -178,29 +185,33 @@ int read(int *iv, int *fv) {
     int op;
     bool read_again = false;
 
-    cout << "1. Fazer tour atraves dos EUA (busca rapida, 85% das cidades, tempo < 60s)" << endl
-         << "2. Fazer tour atraves dos EUA (busca lenta, 95% das cidades, tempo > 130s)" << endl
-         << "3. Buscar menor percurso entre dois lugares" << endl
-         << "4. Sair" << endl;
+    cout << "1. Fazer tour completo atraves dos EUA (busca rapida, 36/42 cidades, tempo < 60s)" << endl
+         << "2. Fazer tour completo atraves dos EUA (busca lenta, 41/42 cidades, tempo variavel)" << endl
+         << "3. Fazer tour em cidades desejadas" << endl
+         << "4. Buscar menor percurso entre dois lugares" << endl
+         << "5. Sair" << endl;
     do {
         read_again = false;
         cout << "> ";
         cin >> op;
         cout << endl;
-        if (op != 4) display_places();
         switch (op) {
             case 1:
             case 2:
+                display_places();
                 read_vertex(iv, fv, op);
                 *iv -= 1;
                 *fv = *iv;
                 break;
             case 3:
+                break;
+            case 4:
+                display_places();
                 read_vertex(iv, fv, op);
                 *iv -= 1;
                 *fv -= 1;
                 break;
-            case 4:
+            case 5:
                 exit(1);
                 break;
             default:
