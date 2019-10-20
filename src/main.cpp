@@ -6,7 +6,7 @@
  * Opcionais funcionando:
  *          Opcional 5
  *
- * Obs:
+ * Obs: Para compilar corretamente, usar o comando "g++ main.cpp -std=gnu++11 -o main"
  *
  * Valor do projeto:  1 ponto(s)
  */
