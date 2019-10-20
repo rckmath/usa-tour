@@ -16,7 +16,7 @@ void add_to_queue(bool *add, Stack &s, Queue &q, element *x, element *min, int j
 
         // Se o custo total for menor que o menor custo, adiciona na fila, caso contrario, poda (caminho ruim)
         if (x->cost < min->cost) {
-            if (op == 2)
+            if (op < 3)
                 push(s, *x);
             else
                 q.insert(*x);
@@ -59,6 +59,7 @@ void process_search(Stack &s, Queue &q, element *x, element *min, int op, int su
     int j = 0;        // Para percorrer as colunas da nossa matriz
     bool add = true;  // Flag p/ adicionar vertice + custo na fila
 
+    // Percorre o numero total de cidades para checar os adjacentes
     for (j = 0; j < size; j++) {
         if (adj_matrix[x->route[x->index]][j] != 0) {
             if (op == 3) {
@@ -85,11 +86,10 @@ void process_search(Stack &s, Queue &q, element *x, element *min, int op, int su
  * @param final_vertex Vertice final/destino
  * @param op Opcao de busca
  * @param sub Fator de subtracao
+ * @return Retorna true caso tenha encontrado um caminho valido
  */
 bool verify(element *x, element *min, Queue &q, Stack &s, int final_vertex, int op, int sub) {
-    /**
-    * Verifica se o ultimo vertice de rota eh igual ao ponto de destino
-    */
+    // Verifica se o ultimo vertice de rota eh igual ao ponto de destinp
     if (x->route[x->index] == final_vertex && x->index > (size - sub)) {
         // Se o custo atual eh menor que o menor custo guardado, guarda o custo atual e o percurso
         if (x->cost < min->cost) {
@@ -100,8 +100,7 @@ bool verify(element *x, element *min, Queue &q, Stack &s, int final_vertex, int 
             return true;
         }
     } else
-        process_search(s, q, x, min, op, sub);
-
+        process_search(s, q, x, min, op, sub);  // Chama processo de busca
     return false;
 }
 
@@ -120,13 +119,15 @@ void search_min(element *min, int initial_vertex, int final_vertex, int op) {
     int sub = 42;          // Fator de subtração
 
     // As operacoes de busca serao feitas de acordo com a opcao do usuario
-    if (op == 1) {
-        size -= 1;
-        sub = 7;
-    } else {
+
+    if (op < 4) {
         initStack(found_routes_s);
         if (op == 2)
             sub = 3;
+        else if (op == 1) {
+            sub = 8;
+            //size -= 1;
+        }
     }
 
     // Inicializa todos os elementos de ambos os arrays de rota presentes nas structs com -1
@@ -140,7 +141,7 @@ void search_min(element *min, int initial_vertex, int final_vertex, int op) {
     cout << endl
          << "Por favor aguarde, buscando rotas..." << endl;
 
-    if (op == 2) {
+    if (op < 4) {
         push(found_routes_s, x);
         while (!isEmpty(found_routes_s)) {
             x = pop(found_routes_s);
@@ -150,8 +151,7 @@ void search_min(element *min, int initial_vertex, int final_vertex, int op) {
         found_routes_q.insert(x);
         while (!found_routes_q.is_empty()) {
             x = found_routes_q.eliminate();
-            if (verify(&x, min, found_routes_q, found_routes_s, final_vertex, op, sub))
-                if (op == 1) break;
+            verify(&x, min, found_routes_q, found_routes_s, final_vertex, op, sub);
         }
     }
 }

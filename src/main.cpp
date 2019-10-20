@@ -2,7 +2,7 @@
  * Nomes:   Erick M. L. Pacheco             RAs:    18711630
  *          Leonardo Sanavio                        18054395
  *
- * Num. max. de cidades atendidas (time-out de 60 segundos):
+ * Num. max. de cidades atendidas (time-out de 60 segundos): 39 (busca rapida), 23 (busca lenta)
  * Opcionais funcionando:
  *          Opcional 5
  *
@@ -140,8 +140,15 @@ void print_shortest(element s, int destiny) {
          << "\n----------------------------------";
 }
 
-int read_vertex(int *iv, int *fv, int op) {
-    bool read_again;
+/**
+ * Le os vertices iniciais e finals
+ * 
+ * @param iv Vertice inicial
+ * @param fv Vertice final
+ * @param op Opcao do usuario
+ */
+void read_vertex(int *iv, int *fv, int op) {
+    bool read_again, i = 0;
 
     cout << "\nInsira o ponto de partida" << endl;
     do {
@@ -178,10 +185,11 @@ int read(int *iv, int *fv) {
     int op;
     bool read_again = false;
 
-    cout << "1. Fazer tour atraves dos EUA (busca rapida, 85% das cidades, tempo < 60s)" << endl
-         << "2. Fazer tour atraves dos EUA (busca lenta, 95% das cidades, tempo > 130s)" << endl
-         << "3. Buscar menor percurso entre dois lugares" << endl
-         << "4. Sair" << endl;
+    cout << "1. Fazer tour completo atraves dos EUA (busca rapida, 36/42 cidades, tempo < 60s)" << endl
+         << "2. Fazer tour completo atraves dos EUA (busca lenta, 41/42 cidades, tempo variavel)" << endl
+         << "3. Fazer tour em cidades desejadas" << endl
+         << "4. Buscar menor percurso entre dois lugares" << endl
+         << "5. Sair" << endl;
     do {
         read_again = false;
         cout << "> ";
@@ -196,12 +204,14 @@ int read(int *iv, int *fv) {
                 *fv = *iv;
                 break;
             case 3:
+                break;
+            case 4:
                 display_places();
                 read_vertex(iv, fv, op);
                 *iv -= 1;
                 *fv -= 1;
                 break;
-            case 4:
+            case 5:
                 exit(1);
                 break;
             default:

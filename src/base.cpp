@@ -11,7 +11,7 @@ typedef route stack_element;
 #include "../lib/dyn_queue.h"
 #include "../lib/stackld.h"
 
-int size = 0;            // Tamanho da matriz
+int size;                // Tamanho da matriz
 int adj_matrix[42][42];  // Matriz de adjacência
 
 /**
