@@ -1,14 +1,5 @@
 /**
- * Nomes:   Erick M. L. Pacheco             RAs:    18711630
- *          Leonardo Sanavio                        18054395
- *
- * Num. max. de cidades atendidas (time-out de 60 segundos): 39 (busca rapida), 23 (busca lenta)
- * Opcionais funcionando:
- *          Opcional 5
- *
  * Obs: Para compilar corretamente, usar o comando "g++ main.cpp -std=gnu++11 -o main"
- *
- * Valor do projeto:  1 ponto(s)
  */
 
 #include <chrono>
